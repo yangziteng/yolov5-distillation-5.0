@@ -371,6 +371,7 @@ def train(hyp, opt, device, tb_writer=None):
                 loss, loss_items = compute_loss(
                     pred, targets.to(device))  # loss scaled by batch_size
                 # distillation
+                print("imgs",imgs)
                 if opt.distill:
                     dloss = compute_distillation_output_loss(
                         pred, t_pred, model, dist_loss, opt.temperature, reg_norm)
@@ -473,9 +474,6 @@ def train(hyp, opt, device, tb_writer=None):
             if (not opt.nosave) or (final_epoch and not opt.evolve):  # if save
                 ckpt = {'epoch': epoch,
                         'best_fitness': best_fitness,
-                        'training_results': results_file.read_text(),
-                        'model': deepcopy(model.module if is_parallel(model) else model).half(),
-                        'ema': deepcopy(ema.ema).half(),
                         'updates': ema.updates,
                         'optimizer': optimizer.state_dict(),
                         'wandb_id': wandb_logger.wandb_run.id if wandb_logger.wandb else None}
